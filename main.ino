@@ -35,13 +35,13 @@ void setup() {
     }
 
     // Création du service Bluetooth personnalisé
-    BLEService sensor_service(SERVICE_UUID);
+    BLEService service_capteur(SERVICE_UUID);
 
     // Ajout de la caractéristique Bluetooth personnalisée au service
-    sensor_service.addCharacteristic(attribut_capteur);
+    service_capteur.addCharacteristic(attribut_capteur);
 
     // Publication du service Bluetooth personnalisé
-    BLE.advertise(sensor_service);
+    BLE.advertise(service_capteur);
 
     Serial.println("Attente de connexion Bluetooth...");
 }
