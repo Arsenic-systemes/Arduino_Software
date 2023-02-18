@@ -6,6 +6,9 @@
 #define SERVICE_UUID        "12ba8c73-556d-47d6-997c-5ac9ca5f5e10"
 // UUID de la caractéristique Bluetooth personnalisée
 #define CHARACTERISTIC_UUID "83c25633-9cb3-46f6-9ef6-7d76ebf8fe3c"
+//On fixe le délaie entre chaque envoi de données
+#define DELAI 250
+
 
 // Structure de données pour stocker les valeurs des capteurs
 struct SensorData {
@@ -75,7 +78,7 @@ void loop() {
             // Envoi des valeurs des capteurs via la caractéristique Bluetooth personnalisée
             attribut_capteur.writeValue((byte*)&sensor_data, sizeof(SensorData));
 
-            delay(100);
+            delay(DELAI);
         }
         // Déconnexion Bluetooth
         Serial.println("Déconnexion Bluetooth");
