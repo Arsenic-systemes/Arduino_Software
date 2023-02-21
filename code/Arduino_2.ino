@@ -1,3 +1,12 @@
+/*
+ * Projet: Multi Air Instrument
+ * Section: 31-A
+ *
+ * Ce programme Arduino configuré pour une seule main
+ * permet de récupérer les données des capteurs et de les envoyer
+ * via Bluetooth à un appareil Android.
+ */
+
 #include <Arduino.h>
 #include <ArduinoBLE.h>
 #include <Arduino_LSM6DS3.h>
@@ -12,9 +21,9 @@
 
 // Structure de données pour stocker les valeurs des capteurs
 struct SensorData {
-    float accelerometer[3];
+    float accelerometre[3];
     float gyroscope[3];
-    float magnetometer[3];
+    float magnetometre[3];
     float flex[5];
 };
 
