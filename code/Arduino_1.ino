@@ -10,7 +10,8 @@
 
 #include <Arduino.h>
 #include <ArduinoBLE.h>
-#include <Arduino_LSM6DS3.h>
+#include <Arduino_LSM9DS1.h>
+
 
 // UUID du service Bluetooth personnalisé
 #define SERVICE_UUID        "12ba8c73-556d-47d6-997c-5ac9ca5f5e10"
@@ -54,7 +55,9 @@ void setup() {
     service_capteur.addCharacteristic(attribut_capteur);
 
     // Publication du service Bluetooth personnalisé
-    BLE.advertise(service_capteur);
+    BLE.setAdvertisedService(service_capteur);
+    BLE.advertise();
+
 
     Serial.println("Attente de connexion Bluetooth...");
 }
@@ -71,24 +74,32 @@ void loop() {
         // Tant que la connexion Bluetooth est active
         while (central.connected()) {
             // Lecture des valeurs de l'accéléromètre
-            float accel_values[3] = {IMU.acceleration().x(), IMU.acceleration().y(), IMU.acceleration().z()};
+            float accel_values[3];
+            IMU.readAcceleration(accel_values[0], accel_values[1], accel_values[2]);
 
             // Lecture des valeurs du gyroscope
-            float gyro_values[3] = {IMU.gyroscope().x(), IMU.gyroscope().y(), IMU.gyroscope().z()};
+            float gyro_values[3];
+            IMU.readGyroscope(gyro_values[0], gyro_values[1], gyro_values[2]);
 
             // Lecture des valeurs du magnétomètre
-            float mag_values[3] = {IMU.magneticField().x(), IMU.magneticField().y(), IMU.magneticField().z()};
+            float mag_values[3];
+            IMU.readMagneticField(mag_values[0], mag_values[1], mag_values[2]);
 
             // Lecture des valeurs des capteurs de flexion
             float flex_values[5] = {analogRead(A0), analogRead(A1), analogRead(A2), analogRead(A3), analogRead(A4)};
 
             // Regroupement des valeurs des capteurs dans une structure de données
-            SensorData sensor_data = {accel_values, gyro_values, mag_values, flex_values};
+            SensorData sensor_data = {
+                    {accel_values[0], accel_values[1], accel_values[2]},
+                    {gyro_values[0], gyro_values[1], gyro_values[2]},
+                    {mag_values[0], mag_values[1], mag_values[2]},
+                    {flex_values[0], flex_values[1], flex_values[2], flex_values[3], flex_values[4]}
+            };
 
             // Envoi des valeurs des capteurs via la caractéristique Bluetooth personnalisée
             attribut_capteur.writeValue((byte*)&sensor_data, sizeof(SensorData));
 
-            delay(DELAI);
+            delay(250);
         }
         // Déconnexion Bluetooth
         Serial.println("Déconnexion Bluetooth");
